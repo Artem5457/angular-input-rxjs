@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { fromEvent, map, debounceTime, distinctUntilChanged, switchMap, mergeMap } from 'rxjs';
+import {fromEvent, map, debounceTime, distinctUntilChanged, switchMap, mergeMap, catchError, EMPTY, filter} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +20,9 @@ export class AppComponent implements OnInit {
         map(e => e.target.value),
         debounceTime(2000), // результат виден через указанный промежуток времени после окончания ввода
         distinctUntilChanged(), // не делает повторные запросы
-        switchMap((value) => this.http.get(`https://api.github.com/search/users?q=${value}`)),
+        filter(value => value.length >= 3),
+        switchMap((value) => this.http.get(`https://api.github.com/search/users?q=${value}`)
+          .pipe(catchError(error => EMPTY))),
         //@ts-ignore
         map(response => response.items),
         // mergeMap(items => items)
@@ -33,8 +35,4 @@ export class AppComponent implements OnInit {
 
     })
   }
-
-  // stream$.subscribe(value => {
-  //   console.log(value);
-  // })
 }

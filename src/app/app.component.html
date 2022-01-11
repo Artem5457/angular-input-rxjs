@@ -1,5 +1,5 @@
 <div class="container">
-  <input 
+  <input
     type="text"
     id="search"
     placeholder="Search repositories..."
@@ -10,11 +10,11 @@
     <div>
       <div *ngFor="let use of posts">
         <div>
-          <img src="" />
-          <span>User Name</span>
+          <img [src]="use.avatar_url" />
+          <span>{{ use.login }}</span>
         </div>
         <div>
-
+          <a [href]="use.html_url" target="_blank">Open GitHub</a>
         </div>
       </div>
     </div>
